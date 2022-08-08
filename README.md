@@ -136,8 +136,8 @@
     run_placement
    
    Placement is carried out as an iterative process till the value of overflow converges to 0.
-      <img src="Day 2/palcementlayout.png">
-      <img src="Day 2/palcementlayout.png">
+      <img src="Day 2/placementlayout.png">
+      <img src="Day 2/placementlayout.png">
    
  
  
