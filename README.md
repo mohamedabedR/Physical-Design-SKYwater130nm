@@ -21,9 +21,6 @@
     - [Placement](#placement)
       - [Placement and Optimization](#placement-and-optimization)
       - [Placement using OpenLANE](#placement-using-openlane)
-    - [Cell Design and Characterization Flows](#cell-design-and-characterization-flows)
-      - [Cell Design Flow](#cell-design-flow)
-      - [Characterization Flow](#characterization-flow)
   - [Day 3 - Design library cell using Magic Layout and ngspice characterization](#day-3---design-library-cell-using-magic-layout-and-ngspice-characterization)
     - [CMOS Inverter Design using Magic](#cmos-inverter-design-using-magic)
     - [Extract SPICE Netlist from Standard Cell Layout](#extract-spice-netlist-from-standard-cell-layout)
@@ -102,13 +99,13 @@
    Chip Floorplanning is the arrangement of logical block, library cells, pins on silicon chip. It makes sure that every module has been assigned an appropriate area and aspect ratio, every pin of the module has connection with other modules or periphery of the chip and modules are arranged in a way such that it consumes lesser area on a chip.
    
  ### Utilization Factor and Aspect Ratio
-   Utilization Factor is ratio of the area of core used by standard cells to the total core area. The utilization factor is generally kept in the range of 0.5-0.7 i.e. 50% - 60%. Maintaining a proper utilization factor facilitates placement and routing optimization.
+   Utilization Factor is ratio of the area of core used by the standart cells to the total core area.
+   Aspect ratio is the ratio between the hight and the width of the core
    
  ### Power Planning
-   Power planning is a step in which power grid network is created to distribute power to each part of the design equally. This step deals with the unwanted voltage drop and ground bounce. Steady state IR Drop is caused by the resistance of the metal wires comprising the power distribution network. By reducing the voltage difference between local power and ground, steady-state IR Drop reduces both the speed and noise immunity of the local cells and macros.
-   
+   Power planning is a step in which power grid network is created to distribute power to each part of the design equally. T
  ### Pin Placement
-   Pin placement is a important part of floorplanning as the timing delays and number of buffers required is dependent on the position of the pin. There are multiple pin placement option available such as equidistant placement, high-density placement.
+   Pin placement is a important part of floorplanning to maintaine small distances between the cells and I/O and this will help us to keep the delay as possible as we could . 
  
  ### Floorplan using OpenLANE
    Floorplanning in OpenLANE is done using the following command. 
@@ -117,7 +114,7 @@
    
    Successful floorplanning gives a `def` file as output. This file contains the die area and placement of standard cells.
    
-   <img src="images/d2_floorplan_def.JPG">
+   <img src="Day 2/floorplan results.png">
  
  ### Review Floorplan Layout in Magic
    Magic Layout Tool is used for visualizing the layout after floorplan. In order to view floorplan in Magic, following three files are required:
@@ -125,9 +122,9 @@
     2. Merged LEF file (`merged.lef`)
     3. DEF File
     
-   <img src="images/d2_floorplan_invoke_magic_cmd.JPG">
-   <img src="images/d2_floorplan_magic.JPG">
-   <img src="images/d2_floorplan_magic_expand.JPG">
+   <img src="Day 2/floorplanlayout.png">
+   <img src="Day 2/floorplanlayout2.png">
+
  
  ## Placement
  ### Placement and Optimization
@@ -138,36 +135,11 @@
     
     run_placement
    
-   The DEF file created during floorplan is used as an input to placement. Placement in OpenLANE occurs in two stages:
-   - Global Placement
-   - Detailed Placement
-   
    Placement is carried out as an iterative process till the value of overflow converges to 0.
+      <img src="Day 2/palcementlayout.png">
+      <img src="Day 2/palcementlayout.png">
    
-   <img src="images/d2_placement_invoke_magic_cmd.JPG">
-   <img src="images/d2_placement_magic.JPG">
-   <table border="0"><tr><td><img src="images/d2_placement_magic_expand.JPG"> </td><td> <img src="images/d2_placement_magic_expand_2.JPG"> </td></tr></table>
-   
- ## Cell Design and Characterization Flows
- ### Cell Design Flow
-  In a border view Cell Design flow is are the stages or steps involved in the entire design of a standard cell. The figure below shows the input, output and design steps involved in cell design
-  
-  <img src="images/d2_cell_design_flow.PNG">
  
- ### Characterization Flow
-  There are few problems of Standard Cells in polygon level format (GDSII). Some of them are:
-  - Extraction of functionality is complicated and unnecessary as it is known
-  - Functional/Delay simulation takes way too long
-  - Power extraction for a whole chip takes too long
-  - Automatic detection of timing constraints (e.g. Setup time) is difficult
-
-  A solution to above problems is Cell Characterization. It is a simple model for delay, function, constraints and power on cell/gate level. The Characterization Flow consists of the following stages:
-  1. Netlist Extraction - Transistors, resistances and capacitances are extracted with special tools and saved as SPICE netlist (or similar)
-  2. Specification of parameters - Library-wide parameters have to be specified: e.g. max Transition time
-  3. Model selection and specification - The used models determine the required data
-  4. Measurement - The cells are simulated with a SPICE-like tool to obtain the required data
-  5. Model Generation - The obtained data is fed into the models
-  6. Verification - Different checks are performed to ensure the correctness of the characterization
  
 # Day 3 - Design library cell using Magic Layout and ngspice characterization
   Every Design is represented by equivalent cell design. All the standard cell designs are available in the Cell Library. A fully custom cell design that meets all rules can be added to the library. To begin with, a CMOS Inverter is designed in Magic Layout Tool and analysis is carried out using NGSPICE tool.
@@ -176,19 +148,13 @@
   The inverter design is done using Magic Layout Tool. It takes the technology file as an input (`sky130A.tech` in this case). Magic tool provide a very easy to use interface to design various layers of the layout. It also has an in-built DRC check fetaure.
   The snippet below shows a layout for CMOS Inverter with and without design rule violations.
   
-  <table border="0">
-  <tr>
-    <td><img src="images/d3_magic_layout_with_error.JPG"> </td>
-    <td> <img src="images/d3_magic_with_error.JPG"> </td>
-  </tr>
-  <tr>
-    <td><img src="images/d3_magic_layout_without_error.JPG"> </td>
-    <td> <img src="images/d3_magic_without_error.JPG"> </td>
-  </tr>
-  </table>
+   <img src="Day 3/Screenshot 2022-08-07 103924.png">
+   <img src="Day 3/layout drc check.png">
+
   
  ## Extract SPICE Netlist from Standard Cell Layout
-  To simulate and verify the functionality of the standard cell layout designed, there is a need of SPICE netlist of a given layout. To mention in brief, "Simulation Program with Integrated Circuit Emphasis (SPICE)" is an industry standard design language for electronic circuitry. SPICE model very closely models the actual circuit behavior.
+  Magic provide to the custumers a way to simulate the designed cells by extracting the netlist and  simulate it with SPICE .
+  
   Extraction of SPICE model for a given layout is done in two stages.
   1. Extract the circuit from the layout design.
   
@@ -201,32 +167,26 @@
   
   The extracted SPICE model like the first snippet shown below. Some modification are done to the SPICE netlist for the purpose of simulations, which is shown in the second snippet below.
   
-  <table border="0">
-  <tr>
-    <td> <center>Commands for Extraction</center> <br /><img src="images/d3_spice_ext_1.JPG"> </td>
-    <td> <center>.ext file</center> <img src="images/d3_spice_ext_2.JPG"> </td>
-  </tr>
-  <tr>
-    <td> <center>Generated SPICE Netlist</center> <img src="images/d3_spice_1.JPG"> </td>
-    <td> <center>Modified SPICE Netlist</center> <img src="images/d3_spice_2.JPG"> </td>
-  </tr>
-  </table>
+ <img src="Day 3/layout extract.png">
+ <img src="Day 3/teminal1.png">
+ the extracted file is sky130_inv.ext 
+
+
   
  ## Transient Analysis using NGSPICE
   The SPICE netlist generated in previous step is simulated using the NGSPICE tool. NGSPICE is an open-source mixed-level/mixed-signal electronic spice circuit simulator.
   The command used to invoke NGSPICE is shown below.
   
     ngspice <name-of-SPICE-netlist-file>
+    <img src="Day 3/spice run.png">
+
     
   Following command is used to plot waveform in ngspice tool.
     
     ngspice 1 -> plot Y vs time A
     
-   <img src="images/d3_ngspice_2.JPG">
-   
-   Below figure shows the waveform of Inverter output vs input w.r.t. time. Many timing parameters like rise time delay, fall time delay, propagation delay are calculated using this waveform.
-   
-   <img src="images/d3_ngspice_3.JPG">
+    <img src="Day 3/spice plot.png">
+
   
 # Day 4 - Pre-layout timing analysis and importance of good clock tree
   In order to use a design of standard cell layout in OpenLANE RTL2GDS flow, it is converted to a standard cell LEF. LEF stands for Library Exchange Format. The entire design has to be analyzed for any timing violations after addition or change in the design.
